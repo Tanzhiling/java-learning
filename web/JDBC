@@ -1,0 +1,72 @@
+-- DDl 数据库结构操作 database table column 操作 create alter drop
+-- DML 数据库数据操作 insert delete update
+-- DQL 数据库查询操作 select from where
+-- DCL 控制权限安全操作 grant
+
+-- 数据库操作
+create database web; /*创建数据库*/
+drop database web; /*删除数据库*/
+show databases; /*查看数据库*/
+use web; /*使用数据库*/
+select database(); /*查看当前正在操作的数据库*/
+
+-- -- 表操作
+create table user (
+uid int(32) primary key auto_increnent,
+u_name varchar(32),
+u_password varchar(32)
+); /*创建表*/
+show tables; /*查看所有表*/
+desc user; /*查看表结构*/
+alter table user add u_info varchar(32) not null; /*添加一列*/
+alter table user modify u_info varchar(100) null; /*修改列类型长度约束*/
+alter table user change u_info info varchar(32) ;/*修改列名*/
+alter table user drop info;/*删除表的一列*/
+rename table user to table_user/*修改表名*/
+
+-- 表记录操作
+insert int user(u_name,u_password) values ('zhangsan','123456'); /*插入一条数据*/
+update user set u_password='qwerty',u_name='lisi'; /*修改表记录 不带条件 就是更改所有数据 */
+update user set u_password='asdfg' where u_name='zhangsan';
+-- 删除
+delete from user where u_name='lisi'; /*带条件 删除一条记录*/
+delete from user; /*删除当前表所有数据*/
+-- delete 跟 truncate 区别  rollback 回滚
+-- delete 是一条一条删 配合事务 可以进行找回 uid不会重置
+-- truncate 是摧毁 再创建一个一模一样的表 无法找回  uid会重置
+
+-- 查询操作 select [distinct] * | 列名,列名 from 表名 [where 条件]
+select * from user; /*查询所有*/
+select u_name,u_password from user;/*查询指定列名*/
+select * from user as shop_user;/*使用表别名查询*/
+select u_name as name from user;/*使用列别名查询*/
+select distinct(u_name) from user;/*查询去掉重复值*/
+select price+10 from user; /*对所有商品加10显示*/
+select * from user where u_name='zhangsan'; /*条件查询*/
+select * from user where price>=60;
+select * from user where u_name like '%张%';
+select * from user where u_id in(1,2,3);
+select * from user where u_name like '%张%' and u_id in(1,2,3);
+select * from user where u_name like '%张%' or u_id in(1,2,3);
+select * from user where not(u_id=1);
+-- 排序
+select * from product order by price asc ; /*升序*/
+select * from product order by price desc ; /*降序*/
+select * from product where u_name like '%张%' order by price asc;
+-- 聚合  sum() 求和 avg() 平均 max() min() count() 计数 不统计null值
+select sum(price) from product;
+select avg(price) from product;
+select max(price) from product;
+select min(price) from product;
+select count(*) from product;
+-- 分组
+select cid,count(*) from product group by cid;
+select avg(price) from product group by cid having avg(price)>2000;
+/*
+select distinct *|字段 ...
+from 表
+where 查询条件
+group by 分组字段
+having 分组条件
+order by 排序字段 asc|desc
+*/
